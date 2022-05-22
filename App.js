@@ -2,13 +2,16 @@ import React from 'react';
 import { ScrollView, SafeAreaView } from 'react-native';
 import styled from "styled-components";
 import Card from './components/Card';
+import Course from './components/Course';
 import { NotificationIcon } from './components/Icons';
 import Logo from './components/Logo';
+import Menu from './components/Menu';
 
 
 export default function App() {
   return (
     <Container>
+    <Menu />
     <SafeAreaView>
     <ScrollView style={{ height: "100%" }}>
       <TitleBar>
@@ -44,6 +47,19 @@ export default function App() {
             />
         ))}
       </ScrollView>
+      <Subtitle>Popular Courses</Subtitle>
+      {courses.map((course, index) => (
+        <Course
+          key={index}
+          image={course.image}
+          title={course.title}
+          subtitle={course.subtitle}
+          logo={course.logo}
+          author={course.author}
+          avatar={course.avatar}
+          caption={course.caption}
+        />
+      ))}
     </ScrollView>
     </SafeAreaView>
     </Container>
@@ -62,6 +78,7 @@ const Subtitle = styled.Text`
 const Container = styled.View`
   flex: 1;
   background-color: #f0f3f5;
+  margin-top: 5px;
 `;
 
 const Title = styled.Text`
@@ -141,5 +158,17 @@ const cards =[
     caption: "JavaScript",
     logo: require('./assets/js.png'),
     subtitle: "7 of 10 sections"
+  }
+];
+
+const courses = [
+  {
+    title: "Prororype in InVision Studio",
+    subtitle: "10 sections",
+    image: require("./assets/background13.jpg"),
+    logo: require("./assets/logo-studio.png"),
+    author: "Meng To",
+    avatar: require("./assets/avatar.jpg"),
+    caption: "Complete guide to designing a site using a collaborative design tool"
   }
 ];
