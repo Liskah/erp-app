@@ -1,26 +1,50 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Animated, TouchableOpacity, Dimensions } from 'react-native';
-import { CloseIcon, SettingsIcon, BillingIcon, CompassIcon, LogoutIcon } from './Icons';
 import MenuItem from './MenuItem';
+import { Ionicons } from "@expo/vector-icons";
+import { connect } from "react-redux";
+
+function mapStateToProps(state) {
+    return { action: state.action };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        closeMenu: () => dispatch({
+            type: "CLOSE_MENU"
+        })
+    }
+}
 
 const screenHeight = Dimensions.get("window").height;
 
 class Menu extends React.Component{
+
     state ={
         top: new Animated.Value(screenHeight)
     };
 
     componentDidMount() {
-        Animated.spring(this.state.top, {
-            toValue: 0
-        }).start();
-    };
+        this.toggleMenu();
+    }
+
+    componentDidUpdate() {
+        this.toggleMenu();
+    }
 
     toggleMenu = () => {
-        Animated.spring(this.state.top, {
-            toValue: screenHeight
-        }).start();
+        if(this.props.action == "openMenu") {
+            Animated.spring(this.state.top, {
+                toValue: 54
+            }).start();
+        }
+
+        if(this.props.action == "closeMenu") {
+            Animated.spring(this.state.top, {
+                toValue: screenHeight
+            }).start();
+        }
     };
 
     render() {
@@ -32,7 +56,7 @@ class Menu extends React.Component{
                     <Subtitle>Designer at Design+Code</Subtitle>
                 </Cover>
                 <TouchableOpacity 
-                    onPress={this.toggleMenu} 
+                    onPress={this.props.closeMenu} 
                     style={{ 
                         position:"absolute", 
                         top: 120, 
@@ -42,42 +66,25 @@ class Menu extends React.Component{
                     }}
                 >
                     <CloseView>
-                        <CloseIcon />
+                        <Ionicons name="close" size={40} color="#546bfb" />
                     </CloseView>
                 </TouchableOpacity>
                 <Content>
-                    <MenuView>
-                        <SettingsIcon />
-                        <BillingIcon />
-                        <CompassIcon />
-                        <LogoutIcon />
-                    </MenuView>
-                    <MenuContent>
-                        {textMenu.map((menu, index) => (
+                        {items.map((item, index) => (
                         <MenuItem
                             key={index}
-                            title={menu.title}
-                            text={menu.text}
+                            icon={item.icon}
+                            title={item.title}
+                            text={item.text}
                         />
                     ))}
-                </MenuContent>
                 </Content>
             </AnimatedContainer>
         )
     }
 }
 
-export default Menu;
-
-const MenuView = styled.View`
-    height: 305px;
-    justify-content: space-between;
-    top: 16px;
-`;
-
-const MenuContent = styled.View`
-
-`;
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
 
 const Image = styled.Image`
     position: absolute;
@@ -113,6 +120,8 @@ const Container = styled.View`
     width: 100%;
     height: 100%;
     z-index: 100;
+    border-radius: 10px;
+    overflow: hidden;
 `;
 
 const AnimatedContainer = Animated.createAnimatedComponent(Container)
@@ -128,24 +137,27 @@ const Content = styled.View`
     height: ${screenHeight};
     background: #f0f3f5;
     padding: 50px;
-    flex-direction: row;
-    justify-items: center;
+
 `;
 
-const textMenu = [
+const items = [
     {
+        icon: "settings",
         title: "Account",
         text: "settings"
     },
     {
+        icon: "card",
         title: "Billing",
         text: "payments"
     },
     {
+        icon: "compass",
         title: "Learn React",
         text: "start course"
     },
     {
+        icon: "exit",
         title: "Log out",
         text: "see you soon!"
     },
