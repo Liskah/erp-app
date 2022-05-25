@@ -15,6 +15,8 @@ export default SectionScreen;
 
 const Container = styled.View`
   flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Text = styled.Text`
